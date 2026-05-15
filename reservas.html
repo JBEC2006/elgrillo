@@ -296,9 +296,8 @@
       list.innerHTML = '';
       for (var h = 8; h <= 19; h++) {
         [0, 30].forEach(function (m) {
-          if (dow === 6 && (h > 13 || (h === 13 && m > 30))) return;
+          if (dow === 6 && h >= 14) return;
           if (dow === 1 && h < 14) return;
-          if (h === 19 && m === 30) return;
           var val = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
           var li  = document.createElement('li');
           li.className = 'custom-select__option';
