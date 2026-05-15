@@ -195,6 +195,11 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   border-bottom-color: var(--color-border);
 }
 
+#nav.nav--scrolled.nav--open {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .nav__inner {
   display: flex;
   align-items: center;
