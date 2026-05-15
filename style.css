@@ -871,6 +871,18 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   background-position: right 0.25rem center;
 }
 
+.field-error {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8C3A3A;
+  margin-top: var(--space-2);
+  display: none;
+}
+.field-error.is-visible {
+  display: block;
+}
+
 .form-hint {
   font-size: var(--text-xs);
   color: var(--color-ink-faint);

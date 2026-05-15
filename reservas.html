@@ -109,6 +109,7 @@
                   placeholder="Tu nombre"
                   autocomplete="given-name"
                   required>
+                <p class="field-error" id="err-nombre">Completá tu nombre</p>
               </div>
               <div class="form-field">
                 <label class="form-label" for="celular">Celular</label>
@@ -120,7 +121,9 @@
                   placeholder="09X XXX XXX"
                   inputmode="numeric"
                   maxlength="11"
-                  autocomplete="tel">
+                  autocomplete="tel"
+                  required>
+                <p class="field-error" id="err-celular">Ingresá tu número de celular</p>
               </div>
             </div>
 
@@ -141,6 +144,7 @@
                 <input type="hidden" id="peluquero" name="peluquero">
               </div>
               <p class="form-hint" id="peluquero-hint"></p>
+              <p class="field-error" id="err-peluquero">Elegí tu peluquero</p>
             </div>
 
             <!-- Fecha + Hora -->
@@ -166,6 +170,7 @@
                   </div>
                   <input type="hidden" id="fecha" name="fecha">
                 </div>
+                <p class="field-error" id="err-fecha">Elegí una fecha</p>
               </div>
               <div class="form-field">
                 <label class="form-label" id="label-hora">Hora</label>
@@ -177,6 +182,7 @@
                   <ul class="custom-select__list" role="listbox" id="horaList"></ul>
                   <input type="hidden" id="hora" name="hora">
                 </div>
+                <p class="field-error" id="err-hora">Elegí un horario</p>
               </div>
             </div>
 
@@ -432,26 +438,56 @@
       }
     });
 
+    /* ── Field error helpers ────────────────────────────────────────────── */
+    function showError(id) {
+      var el = document.getElementById('err-' + id);
+      if (el) el.classList.add('is-visible');
+    }
+    function clearError(id) {
+      var el = document.getElementById('err-' + id);
+      if (el) el.classList.remove('is-visible');
+    }
+    function clearAllErrors() {
+      document.querySelectorAll('.field-error').forEach(function (el) {
+        el.classList.remove('is-visible');
+      });
+    }
+
+    /* Clear errors as user fixes each field */
+    document.getElementById('nombre').addEventListener('input',   function () { if (this.value.trim()) clearError('nombre'); });
+    document.getElementById('celular').addEventListener('input',  function () { if (this.value.trim()) clearError('celular'); });
+    document.getElementById('peluquero').addEventListener('change', function () { clearError('peluquero'); });
+    document.getElementById('fecha').addEventListener('change',   function () { clearError('fecha'); });
+    document.getElementById('hora').addEventListener('change',    function () { clearError('hora'); });
+
     /* ── Demo: intercept submit, show confirmation, send nothing ────────── */
-    var BARBER_NAMES = { Joel: 'Joel', Gerardo: 'Gerardo', Alejandro: 'Alejandro', David: 'David' };
     document.getElementById('bookingForm').addEventListener('submit', function (e) {
       e.preventDefault();
+      clearAllErrors();
+
       var nombre   = document.getElementById('nombre').value.trim();
+      var celular  = document.getElementById('celular').value.trim();
       var barberId = document.getElementById('peluquero').value;
       var fecha    = document.getElementById('fecha').value;
       var hora     = document.getElementById('hora').value;
 
-      if (!nombre || !barberId || !fecha || !hora) {
-        if (!barberId) document.getElementById('csBarber').querySelector('.custom-select__trigger').focus();
-        else if (!fecha) document.getElementById('csDate').querySelector('.custom-select__trigger').focus();
-        else if (!hora)  document.getElementById('csHora').querySelector('.custom-select__trigger').focus();
+      var hasError = false;
+      if (!hora)     { showError('hora');      hasError = true; }
+      if (!fecha)    { showError('fecha');     hasError = true; }
+      if (!barberId) { showError('peluquero'); hasError = true; }
+      if (!celular)  { showError('celular');   hasError = true; }
+      if (!nombre)   { showError('nombre');    hasError = true; }
+
+      if (hasError) {
+        var first = document.querySelector('.field-error.is-visible');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
       var d = new Date(fecha + 'T12:00:00');
       document.getElementById('confirmDetail').innerHTML =
         '<strong>' + DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' de ' + MONTHS_ES[d.getMonth()] + '</strong>' +
-        ' a las <strong>' + hora + '</strong><br>con <strong>' + (BARBER_NAMES[barberId] || barberId) + '</strong>';
+        ' a las <strong>' + hora + '</strong><br>con <strong>' + barberId + '</strong>';
 
       document.getElementById('bookingForm').style.display = 'none';
       var confirmEl = document.getElementById('bookingConfirm');
