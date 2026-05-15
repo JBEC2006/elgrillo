@@ -342,6 +342,7 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   opacity: 0;
   pointer-events: none;
   transform: scale(0.97);
+  will-change: opacity, transform;
   transition:
     opacity var(--dur-base) var(--ease-out-expo),
     transform var(--dur-base) var(--ease-out-expo);
@@ -377,6 +378,7 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
 #nav.nav--open .nav__mobile li:nth-child(2) { transition-delay: 140ms; }
 #nav.nav--open .nav__mobile li:nth-child(3) { transition-delay: 200ms; }
 #nav.nav--open .nav__mobile li:nth-child(4) { transition-delay: 260ms; }
+#nav.nav--open .nav__mobile li:nth-child(5) { transition-delay: 300ms; }
 
 .nav__mobile a {
   font-family: var(--font-display);
@@ -388,7 +390,9 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
 
 .nav__mobile a:not(.btn) {
   position: relative;
-  transition: color var(--dur-fast) var(--ease-in-out);
+  transition:
+    color var(--dur-fast) var(--ease-in-out),
+    letter-spacing var(--dur-base) var(--ease-out-expo);
 }
 
 .nav__mobile a:not(.btn)::after {
@@ -404,11 +408,14 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   transition: transform var(--dur-fast) var(--ease-in-out);
 }
 
-.nav__mobile a:not(.btn):hover {
+.nav__mobile a:not(.btn):hover,
+.nav__mobile a:not(.btn):active {
   color: var(--color-accent);
+  letter-spacing: 0.06em;
 }
 
-.nav__mobile a:not(.btn):hover::after {
+.nav__mobile a:not(.btn):hover::after,
+.nav__mobile a:not(.btn):active::after {
   transform: scaleX(1);
 }
 
@@ -420,6 +427,21 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
 
 .nav__mobile a.btn--primary {
   color: var(--color-surface);
+}
+
+.nav__mobile-secondary {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  transition: color var(--dur-fast) var(--ease-in-out);
+}
+
+.nav__mobile-secondary:hover,
+.nav__mobile-secondary:active {
+  color: var(--color-ink);
 }
 
 /* ─── HERO ───────────────────────────────────────────────────────────────── */

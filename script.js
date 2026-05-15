@@ -19,12 +19,14 @@
   /* ── 2. Mobile menu ──────────────────────────────────────────────────── */
   function openMenu() {
     var scrollY = window.scrollY;
-    nav.classList.add('nav--open');
-    hamburger.setAttribute('aria-expanded', 'true');
-    mobileMenu.setAttribute('aria-hidden', 'false');
     document.body.style.position = 'fixed';
     document.body.style.top = '-' + scrollY + 'px';
     document.body.style.width = '100%';
+    requestAnimationFrame(function () {
+      nav.classList.add('nav--open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+    });
   }
 
   function closeMenu() {
