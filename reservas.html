@@ -123,7 +123,7 @@
                   maxlength="11"
                   autocomplete="tel"
                   required>
-                <p class="field-error" id="err-celular">Ingresá tu número de celular</p>
+                <p class="field-error" id="err-celular">Ingresá un celular uruguayo válido (09X XXX XXX)</p>
               </div>
             </div>
 
@@ -421,15 +421,18 @@
     var celularInput = document.getElementById('celular');
     celularInput.addEventListener('input', function () {
       var digits = this.value.replace(/\D/g, '').slice(0, 9);
+      if (digits.length >= 2 && digits.slice(0, 2) !== '09') {
+        digits = '09' + digits.slice(2);
+      }
+      if (digits.length === 1 && digits !== '0') {
+        digits = '0';
+      }
       if (digits.length > 6)
         this.value = digits.slice(0,3) + ' ' + digits.slice(3,6) + ' ' + digits.slice(6);
       else if (digits.length > 3)
         this.value = digits.slice(0,3) + ' ' + digits.slice(3);
       else
         this.value = digits;
-    });
-    celularInput.addEventListener('blur', function () {
-      this.setCustomValidity('');
     });
 
     /* ── Field error helpers ────────────────────────────────────────────── */
@@ -470,7 +473,8 @@
       if (!hora)     { showError('hora');      hasError = true; }
       if (!fecha)    { showError('fecha');     hasError = true; }
       if (!barberId) { showError('peluquero'); hasError = true; }
-      if (!celular)  { showError('celular');   hasError = true; }
+      var celularDigits = celular.replace(/\D/g, '');
+      if (!celular || celularDigits.length !== 9 || celularDigits.slice(0, 2) !== '09') { showError('celular'); hasError = true; }
       if (!nombre)   { showError('nombre');    hasError = true; }
 
       if (hasError) {
