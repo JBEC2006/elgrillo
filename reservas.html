@@ -31,6 +31,7 @@
             Reservar
           </a>
         </li>
+        <li><a href="cancelar.html">Ver mi reserva</a></li>
       </ul>
 
       <button
@@ -75,25 +76,13 @@
     <section class="booking-section" aria-labelledby="form-heading">
       <div class="container">
 
-        <div class="booking-card" id="bookingCard">
-
-          <!-- ── Confirmation screen (hidden until submit) ─────────────────── -->
-          <div class="booking-confirm" id="bookingConfirm" style="display:none;">
-            <div class="booking-confirm__check">
-              <svg class="booking-confirm__svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle class="booking-confirm__circle" cx="26" cy="26" r="24" stroke="currentColor" stroke-width="2"/>
-                <path class="booking-confirm__tick" d="M14 26 L22 34 L38 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h2 class="booking-confirm__title">¡Turno reservado!</h2>
-            <p class="booking-confirm__sub">Te esperamos el</p>
-            <div class="booking-confirm__detail" id="confirmDetail"></div>
-            <a class="btn btn--primary" href="index.html" style="margin-top: var(--space-8);">Volver al inicio</a>
-          </div>
+        <div class="booking-card">
 
           <form
             class="booking-form"
             id="bookingForm"
+            action="https://www.elgrillo.com/reservas/index.php"
+            method="POST"
             novalidate>
 
             <!-- Nombre + Celular -->
@@ -132,10 +121,10 @@
                   <svg class="custom-select__chevron" width="11" height="7" viewBox="0 0 11 7" fill="none" aria-hidden="true"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
                 </button>
                 <ul class="custom-select__list" role="listbox">
-                  <li class="custom-select__option" data-value="joel" role="option">Joel</li>
-                  <li class="custom-select__option" data-value="gerardo" role="option">Gerardo</li>
-                  <li class="custom-select__option" data-value="alejandro" role="option">Alejandro</li>
-                  <li class="custom-select__option" data-value="david" role="option">David</li>
+                  <li class="custom-select__option" data-value="Joel" role="option">Joel</li>
+                  <li class="custom-select__option" data-value="Gerardo" role="option">Gerardo</li>
+                  <li class="custom-select__option" data-value="Alejandro" role="option">Alejandro</li>
+                  <li class="custom-select__option" data-value="David" role="option">David</li>
                 </ul>
                 <input type="hidden" id="peluquero" name="peluquero">
               </div>
@@ -228,8 +217,6 @@
 
   <script src="script.js" defer></script>
   <script>
-    var STORAGE_KEY  = 'elgrillo_appointments';
-    var BARBER_NAMES = { joel: 'Joel', gerardo: 'Gerardo', alejandro: 'Alejandro', david: 'David' };
     var DAYS_ES      = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
     var MONTHS_ES    = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
     var MONTHS_FULL  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -433,44 +420,19 @@
       }
     });
 
-    /* ── Form submit → localStorage → confirmation ──────────────────────── */
+    /* ── Validate before real POST ──────────────────────────────────────── */
     document.getElementById('bookingForm').addEventListener('submit', function (e) {
-      e.preventDefault();
       var nombre   = document.getElementById('nombre').value.trim();
-      var celular  = document.getElementById('celular').value.trim();
       var barberId = document.getElementById('peluquero').value;
       var fecha    = document.getElementById('fecha').value;
       var hora     = document.getElementById('hora').value;
-      var whatsapp = document.querySelector('input[name="whatsapp"]').checked;
 
       if (!nombre || !barberId || !fecha || !hora) {
+        e.preventDefault();
         if (!barberId) document.getElementById('csBarber').querySelector('.custom-select__trigger').focus();
         else if (!fecha) document.getElementById('csDate').querySelector('.custom-select__trigger').focus();
         else if (!hora)  document.getElementById('csHora').querySelector('.custom-select__trigger').focus();
-        return;
       }
-
-      var apt = {
-        id: 'apt_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
-        barberId: barberId, clientName: nombre, clientPhone: celular,
-        date: fecha, time: hora, status: 'pending',
-        whatsapp: whatsapp, notes: '', createdAt: new Date().toISOString()
-      };
-      try {
-        var apts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        apts.push(apt);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(apts));
-      } catch (err) {}
-
-      var d = new Date(fecha + 'T12:00:00');
-      document.getElementById('confirmDetail').innerHTML =
-        '<strong>' + DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' de ' + MONTHS_ES[d.getMonth()] + '</strong>' +
-        ' a las <strong>' + hora + '</strong><br>con <strong>' + BARBER_NAMES[barberId] + '</strong>';
-
-      document.getElementById('bookingForm').style.display = 'none';
-      var confirmEl = document.getElementById('bookingConfirm');
-      confirmEl.style.display = '';
-      confirmEl.classList.add('is-visible');
     });
 
     /* ── Init ───────────────────────────────────────────────────────────── */
