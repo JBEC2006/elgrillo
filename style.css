@@ -324,6 +324,9 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
 #nav.nav--open .nav__hamburger span:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg);
 }
+#nav.nav--open .nav__hamburger span {
+  background: var(--color-ink);
+}
 
 /* Mobile drawer */
 .nav__mobile {
@@ -338,12 +341,16 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   gap: var(--space-8);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--dur-base) var(--ease-out-expo);
+  transform: scale(0.97);
+  transition:
+    opacity var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo);
 }
 
 #nav.nav--open .nav__mobile {
   opacity: 1;
   pointer-events: all;
+  transform: scale(1);
 }
 
 .nav__mobile ul {
@@ -353,6 +360,24 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   gap: var(--space-8);
 }
 
+.nav__mobile li {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo);
+}
+
+#nav.nav--open .nav__mobile li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#nav.nav--open .nav__mobile li:nth-child(1) { transition-delay: 80ms; }
+#nav.nav--open .nav__mobile li:nth-child(2) { transition-delay: 140ms; }
+#nav.nav--open .nav__mobile li:nth-child(3) { transition-delay: 200ms; }
+#nav.nav--open .nav__mobile li:nth-child(4) { transition-delay: 260ms; }
+
 .nav__mobile a {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
@@ -361,10 +386,40 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   color: var(--color-ink);
 }
 
+.nav__mobile a:not(.btn) {
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-in-out);
+}
+
+.nav__mobile a:not(.btn)::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease-in-out);
+}
+
+.nav__mobile a:not(.btn):hover {
+  color: var(--color-accent);
+}
+
+.nav__mobile a:not(.btn):hover::after {
+  transform: scaleX(1);
+}
+
 .nav__mobile a.btn {
   font-family: var(--font-body);
   font-size: var(--text-base);
   margin-top: var(--space-4);
+}
+
+.nav__mobile a.btn--primary {
+  color: var(--color-surface);
 }
 
 /* ─── HERO ───────────────────────────────────────────────────────────────── */
