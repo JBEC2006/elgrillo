@@ -880,7 +880,7 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   display: none;
 }
 .field-error.is-visible {
-  display: block;
+  display: block !important;
 }
 
 .form-hint {

@@ -429,26 +429,21 @@
         this.value = digits;
     });
     celularInput.addEventListener('blur', function () {
-      var digits = this.value.replace(/\D/g, '');
-      if (digits.length > 0 && (digits.length !== 9 || digits.slice(0,2) !== '09')) {
-        this.setCustomValidity('Número uruguayo: 09X XXX XXX');
-        this.reportValidity();
-      } else {
-        this.setCustomValidity('');
-      }
+      this.setCustomValidity('');
     });
 
     /* ── Field error helpers ────────────────────────────────────────────── */
     function showError(id) {
       var el = document.getElementById('err-' + id);
-      if (el) el.classList.add('is-visible');
+      if (el) { el.style.display = 'block'; el.classList.add('is-visible'); }
     }
     function clearError(id) {
       var el = document.getElementById('err-' + id);
-      if (el) el.classList.remove('is-visible');
+      if (el) { el.style.display = ''; el.classList.remove('is-visible'); }
     }
     function clearAllErrors() {
       document.querySelectorAll('.field-error').forEach(function (el) {
+        el.style.display = '';
         el.classList.remove('is-visible');
       });
     }
