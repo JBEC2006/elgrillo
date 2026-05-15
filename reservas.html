@@ -136,10 +136,10 @@
                   <svg class="custom-select__chevron" width="11" height="7" viewBox="0 0 11 7" fill="none" aria-hidden="true"><path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
                 </button>
                 <ul class="custom-select__list" role="listbox">
-                  <li class="custom-select__option" data-value="Joel" role="option">Joel</li>
-                  <li class="custom-select__option" data-value="Gerardo" role="option">Gerardo</li>
-                  <li class="custom-select__option" data-value="Alejandro" role="option">Alejandro</li>
-                  <li class="custom-select__option" data-value="David" role="option">David</li>
+                  <li class="custom-select__option" data-value="joel" role="option">Joel</li>
+                  <li class="custom-select__option" data-value="gerardo" role="option">Gerardo</li>
+                  <li class="custom-select__option" data-value="alejandro" role="option">Alejandro</li>
+                  <li class="custom-select__option" data-value="david" role="option">David</li>
                 </ul>
                 <input type="hidden" id="peluquero" name="peluquero">
               </div>
@@ -479,10 +479,29 @@
         return;
       }
 
+      var BARBER_NAMES = { joel: 'Joel', gerardo: 'Gerardo', alejandro: 'Alejandro', david: 'David' };
+      try {
+        var apt = {
+          id: 'apt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          barberId: barberId,
+          clientName: nombre,
+          clientPhone: celular,
+          date: fecha,
+          time: hora,
+          status: 'pending',
+          whatsapp: document.querySelector('[name="whatsapp"]').checked,
+          notes: '',
+          createdAt: new Date().toISOString()
+        };
+        var existing = JSON.parse(localStorage.getItem('elgrillo_appointments') || '[]');
+        existing.push(apt);
+        localStorage.setItem('elgrillo_appointments', JSON.stringify(existing));
+      } catch (e) {}
+
       var d = new Date(fecha + 'T12:00:00');
       document.getElementById('confirmDetail').innerHTML =
         '<strong>' + DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' de ' + MONTHS_ES[d.getMonth()] + '</strong>' +
-        ' a las <strong>' + hora + '</strong><br>con <strong>' + barberId + '</strong>';
+        ' a las <strong>' + hora + '</strong><br>con <strong>' + (BARBER_NAMES[barberId] || barberId) + '</strong>';
 
       document.getElementById('bookingForm').style.display = 'none';
       var confirmEl = document.getElementById('bookingConfirm');
