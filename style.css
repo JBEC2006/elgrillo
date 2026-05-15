@@ -429,7 +429,7 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   color: var(--color-surface);
 }
 
-.nav__mobile-secondary {
+.nav__mobile a.nav__mobile-secondary {
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 400;
@@ -439,8 +439,8 @@ button { cursor: pointer; background: none; border: none; font: inherit; }
   transition: color var(--dur-fast) var(--ease-in-out);
 }
 
-.nav__mobile-secondary:hover,
-.nav__mobile-secondary:active {
+.nav__mobile a.nav__mobile-secondary:hover,
+.nav__mobile a.nav__mobile-secondary:active {
   color: var(--color-ink);
 }
 

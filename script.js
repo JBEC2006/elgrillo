@@ -18,26 +18,17 @@
 
   /* ── 2. Mobile menu ──────────────────────────────────────────────────── */
   function openMenu() {
-    var scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + scrollY + 'px';
-    document.body.style.width = '100%';
-    requestAnimationFrame(function () {
-      nav.classList.add('nav--open');
-      hamburger.setAttribute('aria-expanded', 'true');
-      mobileMenu.setAttribute('aria-hidden', 'false');
-    });
+    nav.classList.add('nav--open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
   }
 
   function closeMenu() {
-    var scrollY = document.body.style.top;
     nav.classList.remove('nav--open');
     hamburger.setAttribute('aria-expanded', 'false');
     mobileMenu.setAttribute('aria-hidden', 'true');
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    document.documentElement.style.overflow = '';
   }
 
   hamburger.addEventListener('click', function () {
