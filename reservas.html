@@ -78,11 +78,23 @@
 
         <div class="booking-card">
 
+          <!-- Confirmation screen (demo) -->
+          <div class="booking-confirm" id="bookingConfirm" style="display:none;">
+            <div class="booking-confirm__check">
+              <svg class="booking-confirm__svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle class="booking-confirm__circle" cx="26" cy="26" r="24" stroke="currentColor" stroke-width="2"/>
+                <path class="booking-confirm__tick" d="M14 26 L22 34 L38 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h2 class="booking-confirm__title">¡Turno reservado!</h2>
+            <p class="booking-confirm__sub">Te esperamos el</p>
+            <div class="booking-confirm__detail" id="confirmDetail"></div>
+            <a class="btn btn--primary" href="reservas.html" style="margin-top: var(--space-8);">Nueva reserva</a>
+          </div>
+
           <form
             class="booking-form"
             id="bookingForm"
-            action="https://www.elgrillo.com/reservas/index.php"
-            method="POST"
             novalidate>
 
             <!-- Nombre + Celular -->
@@ -420,19 +432,31 @@
       }
     });
 
-    /* ── Validate before real POST ──────────────────────────────────────── */
+    /* ── Demo: intercept submit, show confirmation, send nothing ────────── */
+    var BARBER_NAMES = { Joel: 'Joel', Gerardo: 'Gerardo', Alejandro: 'Alejandro', David: 'David' };
     document.getElementById('bookingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
       var nombre   = document.getElementById('nombre').value.trim();
       var barberId = document.getElementById('peluquero').value;
       var fecha    = document.getElementById('fecha').value;
       var hora     = document.getElementById('hora').value;
 
       if (!nombre || !barberId || !fecha || !hora) {
-        e.preventDefault();
         if (!barberId) document.getElementById('csBarber').querySelector('.custom-select__trigger').focus();
         else if (!fecha) document.getElementById('csDate').querySelector('.custom-select__trigger').focus();
         else if (!hora)  document.getElementById('csHora').querySelector('.custom-select__trigger').focus();
+        return;
       }
+
+      var d = new Date(fecha + 'T12:00:00');
+      document.getElementById('confirmDetail').innerHTML =
+        '<strong>' + DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' de ' + MONTHS_ES[d.getMonth()] + '</strong>' +
+        ' a las <strong>' + hora + '</strong><br>con <strong>' + (BARBER_NAMES[barberId] || barberId) + '</strong>';
+
+      document.getElementById('bookingForm').style.display = 'none';
+      var confirmEl = document.getElementById('bookingConfirm');
+      confirmEl.style.display = '';
+      confirmEl.classList.add('is-visible');
     });
 
     /* ── Init ───────────────────────────────────────────────────────────── */

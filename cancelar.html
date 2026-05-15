@@ -76,8 +76,7 @@
         <div class="booking-card">
           <form
             class="booking-form"
-            action="https://www.elgrillo.com/cancelar"
-            method="POST">
+            id="cancelarForm">
 
             <p style="font-size: var(--text-sm); color: var(--color-ink-muted); font-weight: 300; line-height: 1.7; margin-bottom: var(--space-2);">
               Ingresá el número de celular con el que hiciste la reserva para verla o cancelarla.
@@ -138,6 +137,11 @@
         this.value = digits.slice(0,3) + ' ' + digits.slice(3);
       else
         this.value = digits;
+    });
+
+    document.getElementById('cancelarForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Esta es una demo visual. La funcionalidad real requiere integración con el sistema de El Grillo.');
     });
   </script>
 </body>
