@@ -19,6 +19,7 @@
   /* ── 2. Mobile menu ──────────────────────────────────────────────────── */
   function openMenu() {
     nav.classList.add('nav--open');
+    mobileMenu.classList.add('nav__mobile--open');
     hamburger.setAttribute('aria-expanded', 'true');
     mobileMenu.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
@@ -26,6 +27,7 @@
 
   function closeMenu() {
     nav.classList.remove('nav--open');
+    mobileMenu.classList.remove('nav__mobile--open');
     hamburger.setAttribute('aria-expanded', 'false');
     mobileMenu.setAttribute('aria-hidden', 'true');
     document.documentElement.style.overflow = '';
