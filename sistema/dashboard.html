@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>El Grillo — Mis Turnos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="sistema.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="sys-header">
+  <a class="sys-header__logo" href="../index.html">El Grillo <span>· 1969</span></a>
+  <div class="sys-header__center">
+    <img class="sys-header__avatar" id="hdrAvatar" src="" alt="">
+    <span class="sys-header__name" id="hdrName"></span>
+  </div>
+  <div class="sys-header__actions">
+    <a class="sys-btn" href="admin.html" id="adminLink" style="display:none">Admin</a>
+    <button class="sys-btn" onclick="logout()">Salir</button>
+  </div>
+</header>
+
+<!-- Date navigation -->
+<div class="date-nav">
+  <button class="date-nav__btn" onclick="prevDay()" aria-label="Día anterior">&#8592;</button>
+  <button class="date-nav__today" onclick="goToday()">Hoy</button>
+  <span class="date-nav__label" id="dateLabel"></span>
+  <button class="date-nav__btn" onclick="nextDay()" aria-label="Día siguiente">&#8594;</button>
+</div>
+
+<!-- Stats strip -->
+<div class="stats-strip">
+  <div class="stats-strip__item">
+    <span class="stats-strip__num stats-strip__num--accent" id="statPending">0</span>
+    <span class="stats-strip__label">Pendientes</span>
+  </div>
+  <div class="stats-strip__item">
+    <span class="stats-strip__num stats-strip__num--green" id="statConfirmed">0</span>
+    <span class="stats-strip__label">Confirmados</span>
+  </div>
+  <div class="stats-strip__item">
+    <span class="stats-strip__num stats-strip__num--muted" id="statCompleted">0</span>
+    <span class="stats-strip__label">Completados</span>
+  </div>
+  <div class="stats-strip__item">
+    <span class="stats-strip__num" id="statTotal">0</span>
+    <span class="stats-strip__label">Total</span>
+  </div>
+</div>
+
+<!-- Appointment list -->
+<div class="apt-list" id="aptList"></div>
+
+<!-- FAB -->
+<button class="fab" onclick="openNewModal()" aria-label="Nuevo turno">+</button>
+
+<!-- New Appointment Modal -->
+<div class="modal-backdrop" id="newModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title">Nuevo turno</span>
+      <button class="modal__close" onclick="closeModal('newModal')">&#215;</button>
+    </div>
+    <div class="modal__body">
+      <form class="sys-form" id="newForm" onsubmit="submitNew(event)">
+        <div class="sys-row">
+          <div class="sys-field">
+            <label class="sys-label" for="nNombre">Nombre</label>
+            <input class="sys-input" type="text" id="nNombre" placeholder="Cliente" required autocomplete="off">
+          </div>
+          <div class="sys-field">
+            <label class="sys-label" for="nCelular">Celular</label>
+            <input class="sys-input" type="tel" id="nCelular" placeholder="09X XXX XXX" autocomplete="off">
+          </div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-field">
+            <label class="sys-label" for="nFecha">Fecha</label>
+            <input class="sys-input" type="date" id="nFecha" required>
+          </div>
+          <div class="sys-field">
+            <label class="sys-label" for="nHora">Hora</label>
+            <select class="sys-select" id="nHora" required>
+              <option value="" disabled selected>Elegí</option>
+            </select>
+          </div>
+        </div>
+        <label class="sys-check">
+          <input class="sys-check__input" type="checkbox" id="nWhatsapp">
+          <span class="sys-check__label">Recordatorio por WhatsApp</span>
+        </label>
+      </form>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--primary btn--full" onclick="submitNew(event)">Guardar turno</button>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  var session     = GrilloData.requireAuth();
+  var barber      = session ? GrilloData.getBarberById(session.barberId) : null;
+  var currentDate = GrilloData.todayStr();
+  var expandedId  = null;
+
+  if (!barber) { window.location.href = 'login.html'; }
+
+  /* ── Header ────────────────────────────────────────────────────────────── */
+  document.getElementById('hdrAvatar').src = GrilloData.unsplashUrl(barber.photoId, 100, 100);
+  document.getElementById('hdrAvatar').alt = barber.name;
+  document.getElementById('hdrName').textContent = barber.name.split(' ')[0];
+
+  /* ── Date navigation ───────────────────────────────────────────────────── */
+  function updateDateLabel() {
+    var label = GrilloData.formatDateMedium(currentDate);
+    if (currentDate === GrilloData.todayStr()) label += ' · Hoy';
+    document.getElementById('dateLabel').textContent = label;
+  }
+
+  function prevDay() {
+    currentDate = GrilloData.addDays(currentDate, -1);
+    loadDay();
+  }
+
+  function nextDay() {
+    currentDate = GrilloData.addDays(currentDate, 1);
+    loadDay();
+  }
+
+  function goToday() {
+    currentDate = GrilloData.todayStr();
+    loadDay();
+  }
+
+  /* ── Stats ─────────────────────────────────────────────────────────────── */
+  function updateStats() {
+    var s = GrilloData.getBarberDayStats(barber.id, currentDate);
+    document.getElementById('statPending').textContent   = s.pending;
+    document.getElementById('statConfirmed').textContent = s.confirmed;
+    document.getElementById('statCompleted').textContent = s.completed;
+    document.getElementById('statTotal').textContent     = s.total;
+  }
+
+  /* ── Render appointment list ───────────────────────────────────────────── */
+  function badgeHtml(status) {
+    var label = GrilloData.STATUS_LABELS[status] || status;
+    return '<span class="badge badge--' + status + '">' + label + '</span>';
+  }
+
+  function actionBtn(id, status, current) {
+    var map = {
+      confirm:  { label: 'Confirmar',  status: 'confirmed', cls: 'action-btn--confirm'  },
+      complete: { label: 'Completar',  status: 'completed', cls: 'action-btn--complete' },
+      noshow:   { label: 'No vino',    status: 'noshow',    cls: 'action-btn--noshow'   },
+      cancel:   { label: 'Cancelar',   status: 'cancelled', cls: 'action-btn--cancel'   }
+    };
+    var btns = [];
+    if (current !== 'confirmed' && current !== 'completed') btns.push('confirm');
+    if (current !== 'completed')                             btns.push('complete');
+    if (current !== 'noshow')                                btns.push('noshow');
+    if (current !== 'cancelled')                             btns.push('cancel');
+
+    return btns.map(function (k) {
+      var m = map[k];
+      return '<button class="action-btn ' + m.cls + '" onclick="changeStatus(\'' + id + '\',\'' + m.status + '\')">' + m.label + '</button>';
+    }).join('');
+  }
+
+  function renderList(apts) {
+    var list = document.getElementById('aptList');
+
+    if (apts.length === 0) {
+      if (GrilloData.isSunday(currentDate)) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128683;</div><p class="empty-state__title">Domingo</p><p class="empty-state__sub">No se atiende los domingos</p></div>';
+      } else {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128197;</div><p class="empty-state__title">Sin turnos</p><p class="empty-state__sub">No hay turnos para este día</p></div>';
+      }
+      return;
+    }
+
+    list.innerHTML = apts.map(function (apt) {
+      var isExpanded = apt.id === expandedId;
+      var classes = ['apt-card', 'apt-card--' + apt.status, isExpanded ? 'apt-card--expanded' : ''].join(' ');
+      return '<div class="' + classes + '" id="card-' + apt.id + '" onclick="toggleCard(\'' + apt.id + '\')">' +
+        '<div class="apt-card__main">' +
+          '<span class="apt-card__time">' + apt.time + '</span>' +
+          '<div class="apt-card__info">' +
+            '<p class="apt-card__name">' + apt.clientName + '</p>' +
+            '<p class="apt-card__phone">' + (apt.clientPhone || '—') + '</p>' +
+          '</div>' +
+          '<div class="apt-card__right">' +
+            badgeHtml(apt.status) +
+            '<span class="apt-card__chevron">&#9660;</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="action-strip">' + actionBtn(apt.id, apt.status, apt.status) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function loadDay() {
+    expandedId = null;
+    updateDateLabel();
+    updateStats();
+    var apts = GrilloData.getByBarberDate(barber.id, currentDate);
+    renderList(apts);
+  }
+
+  /* ── Card interactions ─────────────────────────────────────────────────── */
+  function toggleCard(id) {
+    expandedId = (expandedId === id) ? null : id;
+    var apts = GrilloData.getByBarberDate(barber.id, currentDate);
+    renderList(apts);
+    if (expandedId) {
+      var card = document.getElementById('card-' + expandedId);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function changeStatus(id, status) {
+    GrilloData.updateStatus(id, status);
+    expandedId = null;
+    loadDay();
+  }
+
+  /* ── Touch swipe (right = confirm, left = cancel) ──────────────────────── */
+  var touchStartX = 0;
+  document.getElementById('aptList').addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  document.getElementById('aptList').addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) < 60) return;
+    var card = e.target.closest('.apt-card');
+    if (!card) return;
+    var id = card.id.replace('card-', '');
+    if (dx > 0) changeStatus(id, 'confirmed');
+    else        changeStatus(id, 'cancelled');
+  }, { passive: true });
+
+  /* ── New appointment modal ─────────────────────────────────────────────── */
+  function buildHoraOptions(isSat) {
+    var sel   = document.getElementById('nHora');
+    var maxH  = isSat ? 13 : 19;
+    sel.innerHTML = '<option value="" disabled selected>Elegí</option>';
+    for (var h = 8; h <= maxH; h++) {
+      ['00', '30'].forEach(function (m) {
+        if (h === maxH && m === '30' && isSat) return;
+        var val = String(h).padStart(2,'0') + ':' + m;
+        sel.innerHTML += '<option value="' + val + '">' + val + '</option>';
+      });
+    }
+  }
+
+  function openNewModal() {
+    document.getElementById('nFecha').value    = currentDate;
+    document.getElementById('nNombre').value   = '';
+    document.getElementById('nCelular').value  = '';
+    document.getElementById('nWhatsapp').checked = false;
+    buildHoraOptions(GrilloData.isSaturday(currentDate));
+    document.getElementById('nHora').value     = '';
+    document.getElementById('newModal').classList.add('is-open');
+    setTimeout(function () { document.getElementById('nNombre').focus(); }, 300);
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('is-open');
+  }
+
+  document.getElementById('newModal').addEventListener('click', function (e) {
+    if (e.target === this) closeModal('newModal');
+  });
+
+  document.getElementById('nFecha').addEventListener('change', function () {
+    buildHoraOptions(GrilloData.isSaturday(this.value));
+  });
+
+  function submitNew(e) {
+    e.preventDefault();
+    var nombre  = document.getElementById('nNombre').value.trim();
+    var celular = document.getElementById('nCelular').value.trim();
+    var fecha   = document.getElementById('nFecha').value;
+    var hora    = document.getElementById('nHora').value;
+    if (!nombre || !fecha || !hora) return;
+
+    GrilloData.add({
+      barberId:    barber.id,
+      clientName:  nombre,
+      clientPhone: celular,
+      date:        fecha,
+      time:        hora,
+      whatsapp:    document.getElementById('nWhatsapp').checked
+    });
+
+    closeModal('newModal');
+    if (fecha === currentDate) loadDay();
+  }
+
+  /* ── Logout ────────────────────────────────────────────────────────────── */
+  function logout() {
+    GrilloData.clearSession();
+    window.location.href = 'login.html';
+  }
+
+  /* ── Init ──────────────────────────────────────────────────────────────── */
+  loadDay();
+</script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Peluquería El Grillo — Fundada en 1969. Juan Benito Blanco 1138, Montevideo. Lunes 14:00–20:00, martes a viernes 8:00–20:00, sábados 8:00–14:00.">
+  <meta property="og:title" content="Peluquería El Grillo — desde 1969">
+  <meta property="og:description" content="Más de medio siglo de oficio en Montevideo.">
+  <meta property="og:type" content="website">
+  <title>El Grillo — Peluquería desde 1969</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HairSalon",
+    "name": "Peluquería El Grillo",
+    "foundingDate": "1969-09-18",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Juan Benito Blanco 1138",
+      "addressLocality": "Montevideo",
+      "addressCountry": "UY"
+    },
+    "telephone": "+598-2709-7518",
+    "url": "https://www.elgrillo.com",
+    "openingHours": ["Mo 14:00-20:00", "Tu-Fr 08:00-20:00", "Sa 08:00-14:00"]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <header id="nav" role="banner">
+    <nav class="nav__inner" aria-label="Navegación principal">
+
+      <a class="nav__logo" href="#inicio" aria-label="Peluquería El Grillo — inicio">
+        <span class="nav__logo-name">El Grillo</span>
+        <span class="nav__logo-sub">desde 1969</span>
+      </a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#equipo">Equipo</a></li>
+        <li><a href="#horarios">Horarios</a></li>
+        <li>
+          <a class="btn btn--ghost"
+             href="reservas.html">
+            Reservar
+          </a>
+        </li>
+      </ul>
+
+      <button
+        class="nav__hamburger"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="nav__mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </nav>
+
+    <div id="nav__mobile" class="nav__mobile" aria-hidden="true">
+      <ul role="list">
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#equipo">Equipo</a></li>
+        <li><a href="#horarios">Horarios</a></li>
+        <li>
+          <a class="btn btn--primary"
+             href="reservas.html">
+            Reservar turno
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+    <section id="inicio" class="hero" aria-label="Inicio">
+
+      <img class="hero__bg"
+           src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1920&q=85&auto=format&fit=crop&crop=center"
+           alt=""
+           aria-hidden="true"
+           loading="eager"
+           fetchpriority="high">
+      <div class="hero__overlay" aria-hidden="true"></div>
+
+      <div class="hero__inner container">
+        <p class="overline hero__overline reveal">Peluquería · Montevideo</p>
+        <h1 class="hero__title reveal">
+          El arte<br>
+          <em>del oficio</em>
+        </h1>
+        <p class="hero__sub reveal">Desde el 18 de septiembre de 1969</p>
+        <a class="btn btn--light hero__cta reveal" href="reservas.html">
+          Reservar turno
+        </a>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
+        <div class="hero__scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ── ABOUT ─────────────────────────────────────────────────────────── -->
+    <section id="nosotros" class="about section" aria-labelledby="about-heading">
+      <div class="about__inner container">
+
+        <div class="about__label-col">
+          <p class="overline reveal">Nuestra historia</p>
+          <div class="accent-rule reveal"></div>
+        </div>
+
+        <div class="about__content-col">
+          <h2 id="about-heading" class="about__title reveal">
+            Más de medio siglo<br>de precisión
+          </h2>
+          <p class="about__body reveal">
+            Fundada por Antonio Garabato el 18 de septiembre de 1969,
+            Peluquería El Grillo ha sido testigo de generaciones de familias
+            en el corazón de Montevideo. No vendemos tendencias.
+            Cultivamos el oficio.
+          </p>
+          <p class="about__body reveal" style="margin-top: var(--space-6);">
+            En Juan Benito Blanco 1138, cada corte es el resultado de décadas
+            de experiencia acumulada y transmitida. El trabajo habla por sí solo.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── IMAGE STRIPE ───────────────────────────────────────────────────── -->
+    <div class="img-stripe" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1920&q=85&auto=format&fit=crop&crop=center"
+           alt="" loading="lazy">
+    </div>
+
+    <!-- ── TEAM ──────────────────────────────────────────────────────────── -->
+    <section id="equipo" class="team section section--alt" aria-labelledby="team-heading">
+      <div class="container">
+
+        <div class="team__header reveal">
+          <p class="overline">El equipo</p>
+          <div class="accent-rule"></div>
+          <h2 id="team-heading" class="team__title">Los maestros</h2>
+        </div>
+
+        <ul class="team__grid" role="list">
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?w=400&h=500&q=80&auto=format&fit=crop&crop=faces"
+                   alt="Foto de Antonio Garabato" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">Antonio Garabato</p>
+              <p class="team__role">Fundador</p>
+            </div>
+          </li>
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&q=80&auto=format&fit=crop&crop=faces"
+                   alt="Foto de Joel Garabato" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">Joel Garabato</p>
+              <p class="team__role">Maestro peluquero</p>
+            </div>
+          </li>
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&q=80&auto=format&fit=crop&crop=faces"
+                   alt="Foto de Alejandro Sugo" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">Alejandro Sugo</p>
+              <p class="team__role">Maestro peluquero</p>
+            </div>
+          </li>
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&q=80&auto=format&fit=crop&crop=faces"
+                   alt="Foto de Gerardo Arocha" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">Gerardo Arocha</p>
+              <p class="team__role">Maestro peluquero</p>
+            </div>
+          </li>
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=500&q=80&auto=format&fit=crop&crop=center"
+                   alt="Lola, la border collie del local" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">Lola</p>
+              <p class="team__role">La mascota</p>
+            </div>
+          </li>
+
+          <li class="team__card reveal">
+            <figure class="team__photo">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&q=80&auto=format&fit=crop&crop=faces"
+                   alt="Foto de David" loading="lazy">
+            </figure>
+            <div class="team__card-body">
+              <p class="team__name">David</p>
+              <p class="team__role">Peluquero</p>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── GALLERY ────────────────────────────────────────────────────────── -->
+    <section class="gallery" aria-label="Galería">
+      <div class="gallery__item">
+        <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=85&auto=format&fit=crop"
+             alt="Barbero en acción" loading="lazy">
+      </div>
+      <div class="gallery__item">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=85&auto=format&fit=crop"
+             alt="Interior de la peluquería" loading="lazy">
+      </div>
+      <div class="gallery__item">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&q=85&auto=format&fit=crop"
+             alt="El oficio" loading="lazy">
+      </div>
+    </section>
+
+    <!-- ── HOURS & LOCATION ──────────────────────────────────────────────── -->
+    <section id="horarios" class="info section" aria-labelledby="info-heading">
+      <div class="info__inner container">
+
+        <div class="info__col info__col--hours">
+          <p class="overline reveal">Horarios</p>
+          <div class="accent-rule reveal"></div>
+          <h2 id="info-heading" class="info__title reveal">
+            Cuando<br>nos encontrás
+          </h2>
+          <dl class="hours__list reveal">
+            <div class="hours__row">
+              <dt>Lunes</dt>
+              <dd>14:00 – 20:00</dd>
+            </div>
+            <div class="hours__row">
+              <dt>Martes – Viernes</dt>
+              <dd>8:00 – 20:00</dd>
+            </div>
+            <div class="hours__row">
+              <dt>Sábado</dt>
+              <dd>8:00 – 14:00</dd>
+            </div>
+            <div class="hours__row hours__row--closed">
+              <dt>Domingo</dt>
+              <dd>Cerrado</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="info__divider" aria-hidden="true"></div>
+
+        <div class="info__col info__col--contact">
+          <p class="overline info__location-label reveal">Ubicación</p>
+          <div class="accent-rule reveal"></div>
+          <address class="info__address reveal">
+            Juan Benito Blanco 1138<br>
+            Montevideo, Uruguay
+          </address>
+          <a class="info__phone reveal" href="tel:+59827097518">2709 7518</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CTA BAND ──────────────────────────────────────────────────────── -->
+    <section class="cta-band" aria-label="Reservar turno">
+      <div class="container">
+        <p class="overline cta-band__overline reveal">Listo para venir</p>
+        <h2 class="cta-band__title reveal">
+          Tu turno<br><em>te espera</em>
+        </h2>
+        <a class="btn btn--primary btn--large reveal" href="reservas.html">
+          Reservar turno
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner container">
+      <p class="footer__brand">El Grillo <span>· 1969</span></p>
+      <p class="footer__address">Juan Benito Blanco 1138 · Montevideo · 2709 7518</p>
+      <p class="footer__copy">&copy; 2025 Peluquería El Grillo</p>
+      <a href="sistema/login.html" class="footer__sistema">Acceso interno</a>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>El Grillo — Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="sistema.css">
+  <style>
+    body { overflow: auto; }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+
+  <div class="login-logo">
+    <span class="login-logo__name">El Grillo</span>
+    <span class="login-logo__sub">Sistema interno · 1969</span>
+  </div>
+
+  <!-- Barber selection grid -->
+  <div class="barber-grid" id="barberGrid"></div>
+
+  <button class="login-admin-btn" onclick="openAdmin()">Administración</button>
+
+</div>
+
+<!-- PIN Overlay -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-barber">
+    <img class="pin-barber__photo" id="pinPhoto" src="" alt="">
+    <span class="pin-barber__name" id="pinName"></span>
+  </div>
+
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+  </div>
+
+  <div class="numpad">
+    <button class="numpad-key" onclick="addDigit('1')">1</button>
+    <button class="numpad-key" onclick="addDigit('2')">2</button>
+    <button class="numpad-key" onclick="addDigit('3')">3</button>
+    <button class="numpad-key" onclick="addDigit('4')">4</button>
+    <button class="numpad-key" onclick="addDigit('5')">5</button>
+    <button class="numpad-key" onclick="addDigit('6')">6</button>
+    <button class="numpad-key" onclick="addDigit('7')">7</button>
+    <button class="numpad-key" onclick="addDigit('8')">8</button>
+    <button class="numpad-key" onclick="addDigit('9')">9</button>
+    <button class="numpad-key numpad-key--action" onclick="clearPin()">&#x232B;</button>
+    <button class="numpad-key" onclick="addDigit('0')">0</button>
+    <button class="numpad-key numpad-key--confirm" onclick="confirmPin()">&#x2713;</button>
+  </div>
+
+  <button class="pin-cancel-btn" onclick="closeOverlay()">Cancelar</button>
+</div>
+
+<script src="data.js"></script>
+<script>
+  var currentBarberId = null;
+  var isAdminMode     = false;
+  var pinDigits       = [];
+
+  /* ── Build barber grid ─────────────────────────────────────────────────── */
+  function buildGrid() {
+    var grid    = document.getElementById('barberGrid');
+    var barbers = GrilloData.getBarbers();
+    grid.innerHTML = barbers.map(function (b) {
+      var src = GrilloData.unsplashUrl(b.photoId, 200, 200);
+      return '<button class="barber-card" onclick="selectBarber(\'' + b.id + '\')" aria-label="Ingresar como ' + b.name + '">' +
+        '<img class="barber-card__photo" src="' + src + '" alt="' + b.name + '" loading="eager">' +
+        '<span class="barber-card__name">' + b.name.split(' ')[0] + '</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  /* ── Select barber → open PIN ──────────────────────────────────────────── */
+  function selectBarber(id) {
+    var barber = GrilloData.getBarberById(id);
+    if (!barber) return;
+    currentBarberId = id;
+    isAdminMode     = false;
+    pinDigits       = [];
+
+    document.getElementById('pinPhoto').src = GrilloData.unsplashUrl(barber.photoId, 200, 200);
+    document.getElementById('pinPhoto').alt = barber.name;
+    document.getElementById('pinName').textContent = barber.name;
+    document.getElementById('pinPhoto').style.display = 'block';
+
+    updateDots();
+    document.getElementById('pinOverlay').classList.add('is-open');
+  }
+
+  function openAdmin() {
+    currentBarberId = null;
+    isAdminMode     = true;
+    pinDigits       = [];
+
+    document.getElementById('pinPhoto').style.display = 'none';
+    document.getElementById('pinName').textContent    = 'Administración';
+    updateDots();
+    document.getElementById('pinOverlay').classList.add('is-open');
+  }
+
+  function closeOverlay() {
+    document.getElementById('pinOverlay').classList.remove('is-open');
+    pinDigits = [];
+    updateDots();
+  }
+
+  /* ── PIN input ─────────────────────────────────────────────────────────── */
+  function addDigit(d) {
+    if (pinDigits.length >= 4) return;
+    pinDigits.push(d);
+    updateDots();
+    if (pinDigits.length === 4) {
+      setTimeout(confirmPin, 80);
+    }
+  }
+
+  function clearPin() {
+    pinDigits.pop();
+    updateDots();
+  }
+
+  function updateDots() {
+    for (var i = 0; i < 4; i++) {
+      var dot = document.getElementById('d' + i);
+      dot.classList.toggle('filled', i < pinDigits.length);
+    }
+  }
+
+  function confirmPin() {
+    var pin = pinDigits.join('');
+    if (isAdminMode) {
+      if (GrilloData.authenticateAdmin(pin)) {
+        GrilloData.setSession(null, true);
+        window.location.href = 'admin.html';
+      } else {
+        shakeAndClear();
+      }
+    } else {
+      var barber = GrilloData.authenticate(currentBarberId, pin);
+      if (barber) {
+        GrilloData.setSession(barber.id, false);
+        window.location.href = 'dashboard.html';
+      } else {
+        shakeAndClear();
+      }
+    }
+  }
+
+  function shakeAndClear() {
+    var dots = document.getElementById('pinDots');
+    dots.classList.remove('shake');
+    void dots.offsetWidth; /* reflow to restart animation */
+    dots.classList.add('shake');
+    setTimeout(function () {
+      pinDigits = [];
+      updateDots();
+    }, 400);
+  }
+
+  /* ── Keyboard support ──────────────────────────────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    if (!document.getElementById('pinOverlay').classList.contains('is-open')) return;
+    if (e.key >= '0' && e.key <= '9') addDigit(e.key);
+    if (e.key === 'Backspace') clearPin();
+    if (e.key === 'Enter') confirmPin();
+    if (e.key === 'Escape') closeOverlay();
+  });
+
+  /* ── Init ──────────────────────────────────────────────────────────────── */
+  GrilloData.seedIfEmpty();
+  buildGrid();
+</script>
+</body>
+</html>
