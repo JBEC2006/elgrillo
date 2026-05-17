@@ -234,7 +234,8 @@
     <div class="footer__inner container">
       <p class="footer__brand">El Grillo <span>· 1969</span></p>
       <p class="footer__address">Juan Benito Blanco 1138 · Montevideo · 2709 7518</p>
-      <p class="footer__copy">&copy; 2025 Peluquería El Grillo</p>
+      <p class="footer__copy">&copy; <span id="footer-year"></span> Peluquería El Grillo</p>
+      <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
       <a href="sistema/login.html" class="footer__sistema">Acceso interno</a>
     </div>
   </footer>
